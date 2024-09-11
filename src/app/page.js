@@ -1,41 +1,59 @@
-"use client";
-import BuyMeACoffeeButton from "@/components/BuyMeACoffeeButton";
-import { Loader, LogOut } from "lucide-react";
-import { signOut, useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+"use client"
+import { useSession, signIn, signOut } from "next-auth/react";
+import { useEffect } from "react";
+
 
 export default function Home() {
   const { data: session, status } = useSession();
-  const router = useRouter();
 
-  if (status === "loading") {
+  const popupCenter = (url, title) => {
+    const dualScreenLeft = window.screenLeft ?? window.screenX;
+    const dualScreenTop = window.screenTop ?? window.screenY;
+
+    const width =
+      window.innerWidth ?? document.documentElement.clientWidth ?? screen.width;
+
+    const height =
+      window.innerHeight ??
+      document.documentElement.clientHeight ??
+      screen.height;
+
+    const systemZoom = width / window.screen.availWidth;
+
+    const left = (width - 500) / 2 / systemZoom + dualScreenLeft;
+    const top = (height - 550) / 2 / systemZoom + dualScreenTop;
+
+    const newWindow = window.open(
+      url,
+      title,
+      `width=${500 / systemZoom},height=${550 / systemZoom
+      },top=${top},left=${left}`
+    );
+
+    newWindow?.focus();
+  };
+
+  if (status === "authenticated") {
     return (
-      <div className="bg-white shadow-lg rounded-lg p-6 w-full max-w-md flex justify-center items-center ">
-        <Loader size={32} className=" animate-spin stroke-blue-400 " />
+      <div>
+        <h2>Welcome {session.user.email} 😀</h2>
+        <button onClick={() => signOut()}>Sign out</button>
+      </div>
+    );
+  } else if (status === "unauthenticated") {
+    return (
+      <div>
+        <h2>Please Login</h2>
+        <button onClick={() => popupCenter("/signin", "Sample Sign In")}>
+          Sign In with Google
+        </button>
       </div>
     );
   }
 
-  if (!session) {
-    router.push("/signin");
-    return
-  }
-
   return (
-    <div className="bg-white shadow-lg rounded-lg p-6 w-full max-w-md">
-      <div className="flex justify-between items-center mb-4">
-        <div className="text-lg font-bold">
-          Welcome,{" "}
-          <span className=" text-blue-500 ">{session?.user?.name}</span>
-        </div>
-        <button
-          onClick={() => signOut()}
-          className=" bg-red-500 p-2 rounded-full "
-        >
-          <LogOut size={18} color="white" />
-        </button>
-      </div>
-      <BuyMeACoffeeButton />
+    <div>
+      <h1>Loading...</h1>
     </div>
   );
 }
