@@ -5,10 +5,7 @@ const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
   "Access-Control-Allow-Headers": "Content-Type, Authorization",
-  "X-Frame-Options": "ALLOWALL", // Allow embedding in any iframe
-  "Content-Security-Policy": "frame-ancestors *", // Allow all origins
 };
-
 
 const apiKey = process.env.NEXT_PUBLIC_GOOGLE_API_KEY;
 
