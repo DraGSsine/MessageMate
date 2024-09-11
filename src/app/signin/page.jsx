@@ -4,7 +4,7 @@ import { signIn, useSession } from "next-auth/react";
 import Image from "next/image";
 import React, { useEffect } from "react";
 
-const page = () => {
+const Page = () => {
   const { data: session, status } = useSession();
 
   useEffect(() => {
